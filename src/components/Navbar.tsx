@@ -9,10 +9,10 @@ const Navbar = () => {
   const navLinks = [
     { label: "Início", href: "/", isRoute: true },
     { label: "Cursos", href: "/cursos", isRoute: true },
-    { label: "Sobre", href: "#sobre" },
-    { label: "Depoimentos", href: "#depoimentos" },
-    { label: "Blog", href: "#blog" },
-    { label: "Contato", href: "#contato" },
+    { label: "Sobre", href: "/#sobre", isRoute: true },
+    { label: "Depoimentos", href: "/#depoimentos", isRoute: true },
+    { label: "Blog", href: "/#blog", isRoute: true },
+    { label: "Contato", href: "/#contato", isRoute: true },
   ];
 
   return (
