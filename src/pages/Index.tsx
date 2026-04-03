@@ -24,6 +24,7 @@ const Index = () => {
       <InstructorsSection />
       <BlogSection />
       <CTASection />
+      <ContactSection />
       <Footer />
     </div>
   );
