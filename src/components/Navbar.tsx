@@ -9,10 +9,10 @@ const Navbar = () => {
   const navLinks = [
     { label: "Início", href: "/", isRoute: true },
     { label: "Cursos", href: "/cursos", isRoute: true },
-    { label: "Sobre", href: "#sobre" },
-    { label: "Depoimentos", href: "#depoimentos" },
-    { label: "Blog", href: "#blog" },
-    { label: "Contato", href: "#contato" },
+    { label: "Sobre", href: "/#sobre", isRoute: true },
+    { label: "Depoimentos", href: "/#depoimentos", isRoute: true },
+    { label: "Blog", href: "/#blog", isRoute: true },
+    { label: "Contato", href: "/#contato", isRoute: true },
   ];
 
   return (
@@ -29,8 +29,7 @@ const Navbar = () => {
           </Link>
 
           <div className="hidden lg:flex items-center gap-8">
-            {navLinks.map((link) =>
-              link.isRoute ? (
+            {navLinks.map((link) => (
                 <Link
                   key={link.label}
                   to={link.href}
@@ -38,16 +37,7 @@ const Navbar = () => {
                 >
                   {link.label}
                 </Link>
-              ) : (
-                <a
-                  key={link.label}
-                  href={link.href}
-                  className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
-                >
-                  {link.label}
-                </a>
-              )
-            )}
+            ))}
           </div>
 
           <div className="hidden lg:flex items-center gap-3">
@@ -72,8 +62,7 @@ const Navbar = () => {
 
         {isOpen && (
           <div className="lg:hidden py-4 border-t border-border animate-fade-up">
-            {navLinks.map((link) =>
-              link.isRoute ? (
+            {navLinks.map((link) => (
                 <Link
                   key={link.label}
                   to={link.href}
@@ -82,17 +71,7 @@ const Navbar = () => {
                 >
                   {link.label}
                 </Link>
-              ) : (
-                <a
-                  key={link.label}
-                  href={link.href}
-                  className="block py-2 text-sm font-medium text-muted-foreground hover:text-foreground"
-                  onClick={() => setIsOpen(false)}
-                >
-                  {link.label}
-                </a>
-              )
-            )}
+            ))}
             <div className="flex gap-3 mt-4">
               <Button variant="outline" className="flex-1 rounded-full text-sm">Login</Button>
               <Button className="flex-1 gradient-bg text-primary-foreground rounded-full text-sm">Começar Agora</Button>
