@@ -13,7 +13,12 @@ const DiscountModal = () => {
   const [errors, setErrors] = useState<Record<string, string>>({});
 
   useEffect(() => {
-    const timer = setTimeout(() => setOpen(true), 3000);
+    const alreadySeen = sessionStorage.getItem("discount_modal_seen");
+    if (alreadySeen) return;
+    const timer = setTimeout(() => {
+      setOpen(true);
+      sessionStorage.setItem("discount_modal_seen", "true");
+    }, 3000);
     return () => clearTimeout(timer);
   }, []);
 
