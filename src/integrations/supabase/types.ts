@@ -14,16 +14,258 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      blog_posts: {
+        Row: {
+          category: string | null
+          content: string | null
+          created_at: string
+          date: string | null
+          excerpt: string | null
+          id: string
+          image: string | null
+          published: boolean | null
+          slug: string
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          category?: string | null
+          content?: string | null
+          created_at?: string
+          date?: string | null
+          excerpt?: string | null
+          id?: string
+          image?: string | null
+          published?: boolean | null
+          slug: string
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          category?: string | null
+          content?: string | null
+          created_at?: string
+          date?: string | null
+          excerpt?: string | null
+          id?: string
+          image?: string | null
+          published?: boolean | null
+          slug?: string
+          title?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      categories: {
+        Row: {
+          course_count: string | null
+          created_at: string
+          icon: string | null
+          id: string
+          name: string
+          slug: string
+        }
+        Insert: {
+          course_count?: string | null
+          created_at?: string
+          icon?: string | null
+          id?: string
+          name: string
+          slug: string
+        }
+        Update: {
+          course_count?: string | null
+          created_at?: string
+          icon?: string | null
+          id?: string
+          name?: string
+          slug?: string
+        }
+        Relationships: []
+      }
+      courses: {
+        Row: {
+          badge: string | null
+          category_id: string | null
+          certificate: boolean | null
+          created_at: string
+          description: string | null
+          duration: string | null
+          id: string
+          image: string | null
+          instructor_id: string | null
+          language: string | null
+          lessons: number | null
+          level: string | null
+          modules: Json | null
+          objectives: Json | null
+          price: number | null
+          rating: number | null
+          reviews: number | null
+          sale_price: number | null
+          slug: string
+          students: number | null
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          badge?: string | null
+          category_id?: string | null
+          certificate?: boolean | null
+          created_at?: string
+          description?: string | null
+          duration?: string | null
+          id?: string
+          image?: string | null
+          instructor_id?: string | null
+          language?: string | null
+          lessons?: number | null
+          level?: string | null
+          modules?: Json | null
+          objectives?: Json | null
+          price?: number | null
+          rating?: number | null
+          reviews?: number | null
+          sale_price?: number | null
+          slug: string
+          students?: number | null
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          badge?: string | null
+          category_id?: string | null
+          certificate?: boolean | null
+          created_at?: string
+          description?: string | null
+          duration?: string | null
+          id?: string
+          image?: string | null
+          instructor_id?: string | null
+          language?: string | null
+          lessons?: number | null
+          level?: string | null
+          modules?: Json | null
+          objectives?: Json | null
+          price?: number | null
+          rating?: number | null
+          reviews?: number | null
+          sale_price?: number | null
+          slug?: string
+          students?: number | null
+          title?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "courses_category_id_fkey"
+            columns: ["category_id"]
+            isOneToOne: false
+            referencedRelation: "categories"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "courses_instructor_id_fkey"
+            columns: ["instructor_id"]
+            isOneToOne: false
+            referencedRelation: "instructors"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      instructors: {
+        Row: {
+          avatar: string | null
+          created_at: string
+          id: string
+          linkedin: string | null
+          name: string
+          role: string
+          twitter: string | null
+        }
+        Insert: {
+          avatar?: string | null
+          created_at?: string
+          id?: string
+          linkedin?: string | null
+          name: string
+          role: string
+          twitter?: string | null
+        }
+        Update: {
+          avatar?: string | null
+          created_at?: string
+          id?: string
+          linkedin?: string | null
+          name?: string
+          role?: string
+          twitter?: string | null
+        }
+        Relationships: []
+      }
+      testimonials: {
+        Row: {
+          created_at: string
+          id: string
+          initials: string
+          name: string
+          rating: number | null
+          role: string
+          text: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          initials: string
+          name: string
+          rating?: number | null
+          role: string
+          text: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          initials?: string
+          name?: string
+          rating?: number | null
+          role?: string
+          text?: string
+        }
+        Relationships: []
+      }
+      user_roles: {
+        Row: {
+          id: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Insert: {
+          id?: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Update: {
+          id?: string
+          role?: Database["public"]["Enums"]["app_role"]
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      has_role: {
+        Args: {
+          _role: Database["public"]["Enums"]["app_role"]
+          _user_id: string
+        }
+        Returns: boolean
+      }
     }
     Enums: {
-      [_ in never]: never
+      app_role: "admin" | "user"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -150,6 +392,8 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      app_role: ["admin", "user"],
+    },
   },
 } as const
