@@ -53,7 +53,7 @@ const Footer = () => {
           <div>
             <h4 className="font-semibold mb-4 font-sans">Newsletter</h4>
             <p className="text-sm text-primary-foreground/60 mb-4">
-              Receba novidades e ofertas exclusivas
+              Receba novidades e ofertas exclusivas. :)
             </p>
             <div className="flex gap-2">
               <input
