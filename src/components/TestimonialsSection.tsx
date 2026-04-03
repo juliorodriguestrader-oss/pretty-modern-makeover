@@ -1,0 +1,76 @@
+import { Star, Quote } from "lucide-react";
+
+const testimonials = [
+  {
+    name: "Ricardo Santos",
+    role: "Desenvolvedor Junior",
+    initials: "RS",
+    text: "A EloCursos mudou minha carreira. Consegui minha primeira vaga como desenvolvedor 3 meses após completar o curso de Python.",
+    rating: 5,
+  },
+  {
+    name: "Ana Mendes",
+    role: "Empresária",
+    initials: "AM",
+    text: "Os cursos de marketing me ajudaram a alavancar meu negócio. As estratégias são práticas e funcionam de verdade.",
+    rating: 5,
+  },
+  {
+    name: "Carlos Oliveira",
+    role: "Designer Freelancer",
+    initials: "CO",
+    text: "Qualidade excepcional! Os instrutores são especialistas reais e o suporte é incrível. Recomendo para todos.",
+    rating: 5,
+  },
+];
+
+const TestimonialsSection = () => {
+  return (
+    <section id="depoimentos" className="py-20 lg:py-28 bg-secondary/50">
+      <div className="container mx-auto px-4 lg:px-8">
+        <div className="text-center max-w-2xl mx-auto mb-14">
+          <span className="text-sm font-semibold text-accent uppercase tracking-wider">Depoimentos</span>
+          <h2 className="text-3xl lg:text-4xl font-bold text-foreground mt-3 mb-4">
+            O Que Nossos Alunos Dizem
+          </h2>
+          <p className="text-muted-foreground">
+            Histórias reais de quem transformou sua carreira com a EloCursos
+          </p>
+        </div>
+
+        <div className="grid md:grid-cols-3 gap-8">
+          {testimonials.map((t, i) => (
+            <div
+              key={i}
+              className="bg-card rounded-3xl p-8 shadow-card hover:shadow-elevated transition-all duration-300 relative group hover:-translate-y-1"
+            >
+              <Quote className="w-10 h-10 text-primary/10 absolute top-6 right-6" />
+              
+              <div className="flex items-center gap-1 mb-5">
+                {[...Array(t.rating)].map((_, j) => (
+                  <Star key={j} className="w-4 h-4 text-accent fill-current" />
+                ))}
+              </div>
+
+              <p className="text-foreground leading-relaxed mb-8 font-sans">
+                "{t.text}"
+              </p>
+
+              <div className="flex items-center gap-4">
+                <div className="w-12 h-12 rounded-full gradient-bg flex items-center justify-center text-primary-foreground font-bold text-sm">
+                  {t.initials}
+                </div>
+                <div>
+                  <h4 className="font-semibold text-foreground font-sans">{t.name}</h4>
+                  <p className="text-sm text-muted-foreground">{t.role}</p>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+};
+
+export default TestimonialsSection;
