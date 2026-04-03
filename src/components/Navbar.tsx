@@ -62,8 +62,7 @@ const Navbar = () => {
 
         {isOpen && (
           <div className="lg:hidden py-4 border-t border-border animate-fade-up">
-            {navLinks.map((link) =>
-              link.isRoute ? (
+            {navLinks.map((link) => (
                 <Link
                   key={link.label}
                   to={link.href}
@@ -72,17 +71,7 @@ const Navbar = () => {
                 >
                   {link.label}
                 </Link>
-              ) : (
-                <a
-                  key={link.label}
-                  href={link.href}
-                  className="block py-2 text-sm font-medium text-muted-foreground hover:text-foreground"
-                  onClick={() => setIsOpen(false)}
-                >
-                  {link.label}
-                </a>
-              )
-            )}
+            ))}
             <div className="flex gap-3 mt-4">
               <Button variant="outline" className="flex-1 rounded-full text-sm">Login</Button>
               <Button className="flex-1 gradient-bg text-primary-foreground rounded-full text-sm">Começar Agora</Button>
