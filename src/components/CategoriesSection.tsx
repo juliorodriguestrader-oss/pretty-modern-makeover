@@ -37,8 +37,8 @@ const CategoriesSection = () => {
                 <cat.icon className={`w-5 h-5 ${cat.iconColor}`} />
               </div>
               <div>
-                <h3 className="font-semibold text-foreground text-sm">{cat.name}</h3>
-                <p className="text-xs text-muted-foreground">{cat.count}</p>
+                <h3 className="font-semibold text-foreground text-base font-sans">{cat.name}</h3>
+                <p className="text-sm text-muted-foreground font-sans">{cat.count}</p>
               </div>
             </a>
           ))}
