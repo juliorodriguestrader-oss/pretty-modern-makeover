@@ -1,30 +1,17 @@
 import { ArrowRight, Calendar } from "lucide-react";
-
-const posts = [
-  {
-    title: "10 Dicas para Aprender Python Mais Rápido",
-    excerpt: "Descubra as melhores estratégias para acelerar seu aprendizado em Python.",
-    category: "Programação",
-    date: "15 Mar 2026",
-    image: "https://images.unsplash.com/photo-1526379095098-d400fd0bf935?w=600&h=400&fit=crop",
-  },
-  {
-    title: "Princípios Fundamentais do Design UI/UX",
-    excerpt: "Entenda os conceitos essenciais para criar interfaces intuitivas.",
-    category: "Design",
-    date: "12 Mar 2026",
-    image: "https://images.unsplash.com/photo-1561070791-2526d30994b5?w=600&h=400&fit=crop",
-  },
-  {
-    title: "Estratégias de Marketing Digital para 2026",
-    excerpt: "As tendências que vão dominar o marketing digital neste ano.",
-    category: "Marketing",
-    date: "10 Mar 2026",
-    image: "https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=600&h=400&fit=crop",
-  },
-];
+import { useQuery } from "@tanstack/react-query";
+import { supabase } from "@/integrations/supabase/client";
 
 const BlogSection = () => {
+  const { data: posts } = useQuery({
+    queryKey: ["blog-posts"],
+    queryFn: async () => {
+      const { data, error } = await supabase.from("blog_posts").select("*").eq("published", true).order("created_at", { ascending: false }).limit(3);
+      if (error) throw error;
+      return data;
+    },
+  });
+
   return (
     <section id="blog" className="py-20 lg:py-28 bg-secondary/50">
       <div className="container mx-auto px-4 lg:px-8">
@@ -39,15 +26,15 @@ const BlogSection = () => {
         </div>
 
         <div className="grid md:grid-cols-3 gap-8">
-          {posts.map((post, i) => (
+          {posts?.map((post) => (
             <a
-              key={i}
+              key={post.id}
               href="#"
               className="group bg-card rounded-3xl overflow-hidden shadow-card hover:shadow-elevated transition-all duration-300 hover:-translate-y-1"
             >
               <div className="overflow-hidden">
                 <img
-                  src={post.image}
+                  src={post.image || ""}
                   alt={post.title}
                   className="w-full h-48 object-cover group-hover:scale-110 transition-transform duration-700"
                 />

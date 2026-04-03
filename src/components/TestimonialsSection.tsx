@@ -1,30 +1,17 @@
 import { Star, Quote } from "lucide-react";
-
-const testimonials = [
-  {
-    name: "Ricardo Santos",
-    role: "Desenvolvedor Junior",
-    initials: "RS",
-    text: "A EloCursos mudou minha carreira. Consegui minha primeira vaga como desenvolvedor 3 meses após completar o curso de Python.",
-    rating: 5,
-  },
-  {
-    name: "Ana Mendes",
-    role: "Empresária",
-    initials: "AM",
-    text: "Os cursos de marketing me ajudaram a alavancar meu negócio. As estratégias são práticas e funcionam de verdade.",
-    rating: 5,
-  },
-  {
-    name: "Carlos Oliveira",
-    role: "Designer Freelancer",
-    initials: "CO",
-    text: "Qualidade excepcional! Os instrutores são especialistas reais e o suporte é incrível. Recomendo para todos.",
-    rating: 5,
-  },
-];
+import { useQuery } from "@tanstack/react-query";
+import { supabase } from "@/integrations/supabase/client";
 
 const TestimonialsSection = () => {
+  const { data: testimonials } = useQuery({
+    queryKey: ["testimonials"],
+    queryFn: async () => {
+      const { data, error } = await supabase.from("testimonials").select("*").order("created_at");
+      if (error) throw error;
+      return data;
+    },
+  });
+
   return (
     <section id="depoimentos" className="py-20 lg:py-28 bg-secondary/50">
       <div className="container mx-auto px-4 lg:px-8">
@@ -39,9 +26,9 @@ const TestimonialsSection = () => {
         </div>
 
         <div className="grid md:grid-cols-3 gap-8">
-          {testimonials.map((t, i) => (
+          {testimonials?.map((t) => (
             <div
-              key={i}
+              key={t.id}
               className="bg-card rounded-3xl p-8 shadow-card hover:shadow-elevated transition-all duration-300 relative group hover:-translate-y-1"
             >
               <Quote className="w-10 h-10 text-primary/10 absolute top-6 right-6" />
