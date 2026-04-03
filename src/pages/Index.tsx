@@ -11,10 +11,12 @@ import CTASection from "@/components/CTASection";
 import ContactSection from "@/components/ContactSection";
 import Footer from "@/components/Footer";
 import FloatingButtons from "@/components/FloatingButtons";
+import DiscountModal from "@/components/DiscountModal";
 
 const Index = () => {
   return (
     <div className="min-h-screen">
+      <DiscountModal />
       <Navbar />
       <HeroSection />
       <StatsSection />
