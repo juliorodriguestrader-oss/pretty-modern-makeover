@@ -38,7 +38,7 @@ const AboutSection = () => {
 
           {/* Content */}
           <div>
-            <span className="text-sm font-semibold text-accent uppercase tracking-wider">Sobre Nós</span>
+            <span className="text-sm font-semibold text-accent uppercase tracking-wider">SOBRE NÓS</span>
             <h2 className="text-3xl lg:text-4xl font-bold text-foreground mt-3 mb-6">
               Aprenda & Cresça Suas Habilidades de Qualquer Lugar
             </h2>
