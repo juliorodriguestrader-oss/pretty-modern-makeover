@@ -29,8 +29,7 @@ const Navbar = () => {
           </Link>
 
           <div className="hidden lg:flex items-center gap-8">
-            {navLinks.map((link) =>
-              link.isRoute ? (
+            {navLinks.map((link) => (
                 <Link
                   key={link.label}
                   to={link.href}
@@ -38,16 +37,7 @@ const Navbar = () => {
                 >
                   {link.label}
                 </Link>
-              ) : (
-                <a
-                  key={link.label}
-                  href={link.href}
-                  className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
-                >
-                  {link.label}
-                </a>
-              )
-            )}
+            ))}
           </div>
 
           <div className="hidden lg:flex items-center gap-3">
