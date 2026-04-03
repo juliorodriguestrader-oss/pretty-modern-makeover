@@ -59,8 +59,8 @@ const CourseDetails = () => {
     );
   }
 
-  const modules = (course.modules as CourseModule[]) ?? [];
-  const objectives = (course.objectives as string[]) ?? [];
+  const modules = (course.modules as unknown as CourseModule[]) ?? [];
+  const objectives = (course.objectives as unknown as string[]) ?? [];
   const instructor = course.instructors as any;
   const catName = (course.categories as any)?.name ?? "";
   const totalLessons = modules.reduce((sum, m) => sum + m.lessons.length, 0);
