@@ -1,7 +1,11 @@
+import { useState } from "react";
 import { ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import EnrollmentModal from "@/components/EnrollmentModal";
 
 const CTASection = () => {
+  const [enrollOpen, setEnrollOpen] = useState(false);
+
   return (
     <section className="py-20 lg:py-28">
       <div className="container mx-auto px-4 lg:px-8">
@@ -16,12 +20,17 @@ const CTASection = () => {
           <p className="text-primary-foreground/80 max-w-lg mx-auto mb-8 text-lg relative z-10">
             Junte-se a mais de 50.000 alunos que já estão transformando suas carreiras
           </p>
-          <Button className="bg-card text-foreground rounded-full px-10 py-6 text-base font-semibold hover:bg-card/90 transition-all relative z-10 group">
-            Começar Agora — É Grátis
+          <Button
+            onClick={() => setEnrollOpen(true)}
+            className="bg-card text-foreground rounded-full px-10 py-6 text-base font-semibold hover:bg-card/90 transition-all relative z-10 group"
+          >
+            Inscrição
             <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" />
           </Button>
         </div>
       </div>
+
+      <EnrollmentModal open={enrollOpen} onOpenChange={setEnrollOpen} />
     </section>
   );
 };

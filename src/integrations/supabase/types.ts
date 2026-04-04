@@ -86,6 +86,36 @@ export type Database = {
         }
         Relationships: []
       }
+      course_enrollments: {
+        Row: {
+          assunto: string
+          created_at: string
+          curso: string
+          id: string
+          mensagem: string | null
+          nome: string
+          whatsapp: string
+        }
+        Insert: {
+          assunto: string
+          created_at?: string
+          curso: string
+          id?: string
+          mensagem?: string | null
+          nome: string
+          whatsapp: string
+        }
+        Update: {
+          assunto?: string
+          created_at?: string
+          curso?: string
+          id?: string
+          mensagem?: string | null
+          nome?: string
+          whatsapp?: string
+        }
+        Relationships: []
+      }
       courses: {
         Row: {
           badge: string | null
