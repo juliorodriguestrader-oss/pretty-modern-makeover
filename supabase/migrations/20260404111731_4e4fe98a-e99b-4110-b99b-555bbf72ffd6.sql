@@ -1,0 +1,1 @@
+ALTER TABLE public.blog_posts ADD COLUMN external_url text DEFAULT NULL;

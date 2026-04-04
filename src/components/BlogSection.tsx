@@ -29,7 +29,9 @@ const BlogSection = () => {
           {posts?.map((post) => (
             <a
               key={post.id}
-              href="#"
+              href={post.external_url || "#"}
+              target={post.external_url ? "_blank" : undefined}
+              rel={post.external_url ? "noopener noreferrer" : undefined}
               className="group bg-card rounded-3xl overflow-hidden shadow-card hover:shadow-elevated transition-all duration-300 hover:-translate-y-1"
             >
               <div className="overflow-hidden">

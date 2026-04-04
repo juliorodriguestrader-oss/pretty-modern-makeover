@@ -8,7 +8,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Switch } from "@/components/ui/switch";
 import { toast } from "sonner";
-import { Plus, Pencil, Trash2, Copy } from "lucide-react";
+import { Plus, Pencil, Trash2, Copy, Link, FileText, Loader2 } from "lucide-react";
 
 interface BlogPost {
   id: string;
@@ -20,13 +20,16 @@ interface BlogPost {
   date: string | null;
   image: string | null;
   published: boolean | null;
+  external_url: string | null;
 }
 
 const AdminBlog = () => {
   const queryClient = useQueryClient();
   const [open, setOpen] = useState(false);
   const [editing, setEditing] = useState<BlogPost | null>(null);
-  const [form, setForm] = useState({ title: "", slug: "", excerpt: "", content: "", category: "", date: "", image: "", published: true });
+  const [postType, setPostType] = useState<"internal" | "external">("internal");
+  const [fetchingUrl, setFetchingUrl] = useState(false);
+  const [form, setForm] = useState({ title: "", slug: "", excerpt: "", content: "", category: "", date: "", image: "", published: true, external_url: "" });
 
   const { data: posts, isLoading } = useQuery({
     queryKey: ["admin-blog"],
@@ -39,7 +42,17 @@ const AdminBlog = () => {
 
   const saveMutation = useMutation({
     mutationFn: async (p: typeof form & { id?: string }) => {
-      const payload = { title: p.title, slug: p.slug, excerpt: p.excerpt || null, content: p.content || null, category: p.category || null, date: p.date || null, image: p.image || null, published: p.published };
+      const payload = {
+        title: p.title,
+        slug: p.slug,
+        excerpt: p.excerpt || null,
+        content: postType === "external" ? null : (p.content || null),
+        category: p.category || null,
+        date: p.date || null,
+        image: p.image || null,
+        published: p.published,
+        external_url: postType === "external" ? (p.external_url || null) : null,
+      };
       if (p.id) {
         const { error } = await supabase.from("blog_posts").update(payload).eq("id", p.id);
         if (error) throw error;
@@ -67,15 +80,99 @@ const AdminBlog = () => {
     },
   });
 
-  const openNew = () => { setEditing(null); setForm({ title: "", slug: "", excerpt: "", content: "", category: "", date: "", image: "", published: true }); setOpen(true); };
-  const openEdit = (p: BlogPost) => { setEditing(p); setForm({ title: p.title, slug: p.slug, excerpt: p.excerpt || "", content: p.content || "", category: p.category || "", date: p.date || "", image: p.image || "", published: p.published ?? true }); setOpen(true); };
-  const duplicate = (p: BlogPost) => { setEditing(null); setForm({ title: p.title + " (cópia)", slug: p.slug + "-copia", excerpt: p.excerpt || "", content: p.content || "", category: p.category || "", date: p.date || "", image: p.image || "", published: false }); setOpen(true); };
+  const fetchMetaFromUrl = async (url: string) => {
+    if (!url) return;
+    setFetchingUrl(true);
+    try {
+      const res = await fetch(`https://api.microlink.io?url=${encodeURIComponent(url)}`);
+      const json = await res.json();
+      if (json.status === "success" && json.data) {
+        const d = json.data;
+        const title = d.title || "";
+        const slug = title.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "").slice(0, 80);
+        const now = new Date();
+        const dateStr = now.toLocaleDateString("pt-BR", { day: "2-digit", month: "short", year: "numeric" });
+        setForm((prev) => ({
+          ...prev,
+          title,
+          slug,
+          excerpt: d.description || "",
+          image: d.image?.url || d.logo?.url || "",
+          date: dateStr,
+          category: d.publisher || "",
+          external_url: url,
+        }));
+        toast.success("Dados importados com sucesso!");
+      } else {
+        toast.error("Não foi possível extrair os dados do link");
+      }
+    } catch {
+      toast.error("Erro ao buscar dados do link");
+    } finally {
+      setFetchingUrl(false);
+    }
+  };
+
+  const openNewInternal = () => {
+    setEditing(null);
+    setPostType("internal");
+    setForm({ title: "", slug: "", excerpt: "", content: "", category: "", date: "", image: "", published: true, external_url: "" });
+    setOpen(true);
+  };
+
+  const openNewExternal = () => {
+    setEditing(null);
+    setPostType("external");
+    setForm({ title: "", slug: "", excerpt: "", content: "", category: "", date: "", image: "", published: true, external_url: "" });
+    setOpen(true);
+  };
+
+  const openEdit = (p: BlogPost) => {
+    setEditing(p);
+    setPostType(p.external_url ? "external" : "internal");
+    setForm({
+      title: p.title,
+      slug: p.slug,
+      excerpt: p.excerpt || "",
+      content: p.content || "",
+      category: p.category || "",
+      date: p.date || "",
+      image: p.image || "",
+      published: p.published ?? true,
+      external_url: p.external_url || "",
+    });
+    setOpen(true);
+  };
+
+  const duplicate = (p: BlogPost) => {
+    setEditing(null);
+    setPostType(p.external_url ? "external" : "internal");
+    setForm({
+      title: p.title + " (cópia)",
+      slug: p.slug + "-copia",
+      excerpt: p.excerpt || "",
+      content: p.content || "",
+      category: p.category || "",
+      date: p.date || "",
+      image: p.image || "",
+      published: false,
+      external_url: p.external_url || "",
+    });
+    setOpen(true);
+  };
 
   return (
     <div>
       <div className="flex items-center justify-between mb-6">
         <h1 className="text-2xl font-bold text-foreground">Blog</h1>
-        <Button onClick={openNew}><Plus className="w-4 h-4 mr-2" />Novo Post</Button>
+        <div className="flex gap-2">
+          <Button onClick={openNewInternal} variant="default">
+            <FileText className="w-4 h-4 mr-2" />Post Interno
+          </Button>
+          <Button onClick={openNewExternal} variant="outline">
+            <Link className="w-4 h-4 mr-2" />Post Externo
+          </Button>
+        </div>
       </div>
 
       {isLoading ? <p className="text-muted-foreground">Carregando...</p> : (
@@ -84,6 +181,7 @@ const AdminBlog = () => {
             <thead className="bg-muted">
               <tr>
                 <th className="text-left px-4 py-3 text-sm font-medium text-muted-foreground">Título</th>
+                <th className="text-left px-4 py-3 text-sm font-medium text-muted-foreground">Tipo</th>
                 <th className="text-left px-4 py-3 text-sm font-medium text-muted-foreground">Categoria</th>
                 <th className="text-left px-4 py-3 text-sm font-medium text-muted-foreground">Data</th>
                 <th className="text-left px-4 py-3 text-sm font-medium text-muted-foreground">Status</th>
@@ -94,6 +192,11 @@ const AdminBlog = () => {
               {posts?.map((p) => (
                 <tr key={p.id} className="border-t border-border">
                   <td className="px-4 py-3 text-foreground">{p.title}</td>
+                  <td className="px-4 py-3">
+                    <span className={`px-2 py-1 rounded-full text-xs font-medium ${p.external_url ? "bg-blue-100 text-blue-700" : "bg-purple-100 text-purple-700"}`}>
+                      {p.external_url ? "Externo" : "Interno"}
+                    </span>
+                  </td>
                   <td className="px-4 py-3 text-muted-foreground">{p.category}</td>
                   <td className="px-4 py-3 text-muted-foreground">{p.date}</td>
                   <td className="px-4 py-3">
@@ -116,9 +219,42 @@ const AdminBlog = () => {
       )}
 
       <Dialog open={open} onOpenChange={setOpen}>
-        <DialogContent className="max-w-2xl">
-          <DialogHeader><DialogTitle>{editing ? "Editar" : "Novo"} Post</DialogTitle></DialogHeader>
+        <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle>
+              {editing ? "Editar" : "Novo"} Post {postType === "external" ? "Externo" : "Interno"}
+            </DialogTitle>
+          </DialogHeader>
+
+          {postType === "external" && !editing && (
+            <div className="bg-muted/50 rounded-lg p-4 space-y-3 border border-border">
+              <Label className="text-sm font-semibold">Cole o link da notícia para importar automaticamente</Label>
+              <div className="flex gap-2">
+                <Input
+                  value={form.external_url}
+                  onChange={(e) => setForm({ ...form, external_url: e.target.value })}
+                  placeholder="https://exemplo.com/noticia"
+                  type="url"
+                />
+                <Button
+                  type="button"
+                  onClick={() => fetchMetaFromUrl(form.external_url)}
+                  disabled={fetchingUrl || !form.external_url}
+                  variant="secondary"
+                >
+                  {fetchingUrl ? <Loader2 className="w-4 h-4 animate-spin" /> : "Importar"}
+                </Button>
+              </div>
+            </div>
+          )}
+
           <form onSubmit={(e) => { e.preventDefault(); saveMutation.mutate({ ...form, id: editing?.id }); }} className="space-y-4">
+            {postType === "external" && editing && (
+              <div>
+                <Label>URL Externa</Label>
+                <Input value={form.external_url} onChange={(e) => setForm({ ...form, external_url: e.target.value })} placeholder="https://exemplo.com/noticia" />
+              </div>
+            )}
             <div className="grid grid-cols-2 gap-4">
               <div><Label>Título</Label><Input value={form.title} onChange={(e) => setForm({ ...form, title: e.target.value })} required /></div>
               <div><Label>Slug</Label><Input value={form.slug} onChange={(e) => setForm({ ...form, slug: e.target.value })} required /></div>
@@ -129,7 +265,9 @@ const AdminBlog = () => {
               <div><Label>URL da Imagem</Label><Input value={form.image} onChange={(e) => setForm({ ...form, image: e.target.value })} /></div>
             </div>
             <div><Label>Resumo</Label><Textarea value={form.excerpt} onChange={(e) => setForm({ ...form, excerpt: e.target.value })} rows={2} /></div>
-            <div><Label>Conteúdo</Label><Textarea value={form.content} onChange={(e) => setForm({ ...form, content: e.target.value })} rows={6} /></div>
+            {postType === "internal" && (
+              <div><Label>Conteúdo</Label><Textarea value={form.content} onChange={(e) => setForm({ ...form, content: e.target.value })} rows={6} /></div>
+            )}
             <div className="flex items-center gap-2">
               <Switch checked={form.published} onCheckedChange={(v) => setForm({ ...form, published: v })} />
               <Label>Publicado</Label>
