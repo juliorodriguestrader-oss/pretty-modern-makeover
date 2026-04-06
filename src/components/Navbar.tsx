@@ -48,7 +48,7 @@ const Navbar = () => {
               Login
             </Button>
             <Button className="gradient-bg text-primary-foreground rounded-full px-6 text-sm font-medium hover:opacity-90 transition-opacity">
-              Começar Agora
+Inscreva-se
             </Button>
           </div>
 
