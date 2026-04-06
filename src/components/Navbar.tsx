@@ -48,7 +48,7 @@ const Navbar = () => {
               Login
             </Button>
             <Button className="gradient-bg text-primary-foreground rounded-full px-6 text-sm font-medium hover:opacity-90 transition-opacity">
-              Começar Agora
+Inscreva-se
             </Button>
           </div>
 
@@ -74,7 +74,7 @@ const Navbar = () => {
             ))}
             <div className="flex gap-3 mt-4">
               <Button variant="outline" className="flex-1 rounded-full text-sm">Login</Button>
-              <Button className="flex-1 gradient-bg text-primary-foreground rounded-full text-sm">Começar Agora</Button>
+              <Button className="flex-1 gradient-bg text-primary-foreground rounded-full text-sm">Inscreva-se</Button>
             </div>
           </div>
         )}

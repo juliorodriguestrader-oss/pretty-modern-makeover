@@ -24,7 +24,7 @@ const CTASection = () => {
             onClick={() => setEnrollOpen(true)}
             className="bg-card text-foreground rounded-full px-10 py-6 text-base font-semibold hover:bg-card/90 transition-all relative z-10 group"
           >
-            Inscrição
+            Inscreva-se
             <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" />
           </Button>
         </div>
