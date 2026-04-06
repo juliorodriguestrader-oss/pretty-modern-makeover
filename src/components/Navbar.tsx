@@ -74,7 +74,7 @@ Inscreva-se
             ))}
             <div className="flex gap-3 mt-4">
               <Button variant="outline" className="flex-1 rounded-full text-sm">Login</Button>
-              <Button className="flex-1 gradient-bg text-primary-foreground rounded-full text-sm">Começar Agora</Button>
+              <Button className="flex-1 gradient-bg text-primary-foreground rounded-full text-sm">Inscreva-se</Button>
             </div>
           </div>
         )}
