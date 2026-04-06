@@ -8,15 +8,21 @@ const CoursesSection = () => {
   const { data: featured, error, isLoading } = useQuery({
     queryKey: ["featured-courses"],
     queryFn: async () => {
-      console.log("CoursesSection: fetching courses...");
-      const { data, error } = await supabase
-        .from("courses")
-        .select("*, categories(name)")
-        .order("students", { ascending: false })
-        .limit(3);
-      console.log("CoursesSection: result", { data, error });
-      if (error) throw error;
-      return data;
+      console.log("Supabase URL:", (supabase as any).supabaseUrl);
+      console.log("Supabase Key:", (supabase as any).supabaseKey?.substring(0, 20));
+      try {
+        const { data, error } = await supabase
+          .from("courses")
+          .select("*, categories(name)")
+          .order("students", { ascending: false })
+          .limit(3);
+        console.log("CoursesSection: result", { data, error });
+        if (error) throw error;
+        return data;
+      } catch (e) {
+        console.error("CoursesSection: catch error", e);
+        throw e;
+      }
     },
   });
 
