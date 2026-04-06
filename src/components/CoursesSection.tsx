@@ -5,18 +5,22 @@ import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 
 const CoursesSection = () => {
-  const { data: featured } = useQuery({
+  const { data: featured, error, isLoading } = useQuery({
     queryKey: ["featured-courses"],
     queryFn: async () => {
+      console.log("CoursesSection: fetching courses...");
       const { data, error } = await supabase
         .from("courses")
         .select("*, categories(name)")
         .order("students", { ascending: false })
         .limit(3);
+      console.log("CoursesSection: result", { data, error });
       if (error) throw error;
       return data;
     },
   });
+
+  console.log("CoursesSection render:", { featured, error, isLoading });
 
   return (
     <section id="cursos" className="py-20 lg:py-28 bg-secondary/50">
