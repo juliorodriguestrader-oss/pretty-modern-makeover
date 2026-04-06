@@ -1,14 +1,21 @@
 import { ArrowRight, Calendar } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
+import { blogPostsFallback } from "@/data/homeFallbacks";
 
 const BlogSection = () => {
-  const { data: posts } = useQuery({
+  const { data: posts = blogPostsFallback } = useQuery({
     queryKey: ["blog-posts"],
+    initialData: blogPostsFallback,
+    retry: 1,
     queryFn: async () => {
-      const { data, error } = await supabase.from("blog_posts").select("*").eq("published", true).order("created_at", { ascending: false }).limit(3);
-      if (error) throw error;
-      return data;
+      try {
+        const { data, error } = await supabase.from("blog_posts").select("*").eq("published", true).order("created_at", { ascending: false }).limit(3);
+        if (error) throw error;
+        return data?.length ? data : blogPostsFallback;
+      } catch {
+        return blogPostsFallback;
+      }
     },
   });
 
@@ -26,12 +33,12 @@ const BlogSection = () => {
         </div>
 
         <div className="grid md:grid-cols-3 gap-8">
-          {posts?.map((post) => (
+          {posts.map((post) => (
             <a
               key={post.id}
               href={post.external_url || "#"}
-              target={post.external_url ? "_blank" : undefined}
-              rel={post.external_url ? "noopener noreferrer" : undefined}
+              target={post.external_url && post.external_url !== "#" ? "_blank" : undefined}
+              rel={post.external_url && post.external_url !== "#" ? "noopener noreferrer" : undefined}
               className="group bg-card rounded-3xl overflow-hidden shadow-card hover:shadow-elevated transition-all duration-300 hover:-translate-y-1"
             >
               <div className="overflow-hidden">
@@ -39,6 +46,7 @@ const BlogSection = () => {
                   src={post.image || ""}
                   alt={post.title}
                   className="w-full h-48 object-cover group-hover:scale-110 transition-transform duration-700"
+                  loading="lazy"
                 />
               </div>
               <div className="p-6">

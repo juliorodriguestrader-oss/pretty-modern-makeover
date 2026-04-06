@@ -3,30 +3,28 @@ import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
+import { featuredCoursesFallback } from "@/data/homeFallbacks";
 
 const CoursesSection = () => {
-  const { data: featured, error, isLoading } = useQuery({
+  const { data: featured = featuredCoursesFallback } = useQuery({
     queryKey: ["featured-courses"],
+    initialData: featuredCoursesFallback,
+    retry: 1,
     queryFn: async () => {
-      console.log("Supabase URL:", (supabase as any).supabaseUrl);
-      console.log("Supabase Key:", (supabase as any).supabaseKey?.substring(0, 20));
       try {
         const { data, error } = await supabase
           .from("courses")
           .select("*, categories(name)")
           .order("students", { ascending: false })
           .limit(3);
-        console.log("CoursesSection: result", { data, error });
+
         if (error) throw error;
-        return data;
-      } catch (e) {
-        console.error("CoursesSection: catch error", e);
-        throw e;
+        return data?.length ? data : featuredCoursesFallback;
+      } catch {
+        return featuredCoursesFallback;
       }
     },
   });
-
-  console.log("CoursesSection render:", { featured, error, isLoading });
 
   return (
     <section id="cursos" className="py-20 lg:py-28 bg-secondary/50">
@@ -38,12 +36,12 @@ const CoursesSection = () => {
         </div>
 
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {featured?.map((course) => {
-            const catName = (course.categories as any)?.name ?? "";
+          {featured.map((course) => {
+            const catName = (course.categories as { name?: string } | null)?.name ?? "";
             return (
               <Link to={`/cursos/${course.slug}`} key={course.id} className="group bg-card rounded-3xl overflow-hidden shadow-card hover:shadow-elevated transition-all duration-500 hover:-translate-y-2">
                 <div className="relative overflow-hidden">
-                  <img src={course.image || ""} alt={course.title} className="w-full h-52 object-cover group-hover:scale-110 transition-transform duration-700" />
+                  <img src={course.image || ""} alt={course.title} className="w-full h-52 object-cover group-hover:scale-110 transition-transform duration-700" loading="lazy" />
                   {course.badge && <div className="absolute top-4 left-4"><span className="px-3 py-1 rounded-full text-xs font-semibold gradient-bg text-primary-foreground">{course.badge}</span></div>}
                 </div>
                 <div className="p-6">

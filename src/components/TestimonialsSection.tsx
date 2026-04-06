@@ -1,14 +1,21 @@
 import { Star, Quote } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
+import { testimonialsFallback } from "@/data/homeFallbacks";
 
 const TestimonialsSection = () => {
-  const { data: testimonials } = useQuery({
+  const { data: testimonials = testimonialsFallback } = useQuery({
     queryKey: ["testimonials"],
+    initialData: testimonialsFallback,
+    retry: 1,
     queryFn: async () => {
-      const { data, error } = await supabase.from("testimonials").select("*").order("created_at");
-      if (error) throw error;
-      return data;
+      try {
+        const { data, error } = await supabase.from("testimonials").select("*").order("created_at");
+        if (error) throw error;
+        return data?.length ? data : testimonialsFallback;
+      } catch {
+        return testimonialsFallback;
+      }
     },
   });
 
@@ -26,15 +33,15 @@ const TestimonialsSection = () => {
         </div>
 
         <div className="grid md:grid-cols-3 gap-8">
-          {testimonials?.map((t) => (
+          {testimonials.map((t) => (
             <div
               key={t.id}
               className="bg-card rounded-3xl p-8 shadow-card hover:shadow-elevated transition-all duration-300 relative group hover:-translate-y-1"
             >
               <Quote className="w-10 h-10 text-primary/10 absolute top-6 right-6" />
-              
+
               <div className="flex items-center gap-1 mb-5">
-                {[...Array(t.rating)].map((_, j) => (
+                {Array.from({ length: Math.max(0, Math.round(Number(t.rating) || 5)) }).map((_, j) => (
                   <Star key={j} className="w-4 h-4 text-accent fill-current" />
                 ))}
               </div>

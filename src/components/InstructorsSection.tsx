@@ -1,14 +1,21 @@
 import { Linkedin, Twitter } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
+import { instructorsFallback } from "@/data/homeFallbacks";
 
 const InstructorsSection = () => {
-  const { data: instructors } = useQuery({
+  const { data: instructors = instructorsFallback } = useQuery({
     queryKey: ["instructors"],
+    initialData: instructorsFallback,
+    retry: 1,
     queryFn: async () => {
-      const { data, error } = await supabase.from("instructors").select("*").order("created_at").limit(4);
-      if (error) throw error;
-      return data;
+      try {
+        const { data, error } = await supabase.from("instructors").select("*").order("created_at").limit(4);
+        if (error) throw error;
+        return data?.length ? data : instructorsFallback;
+      } catch {
+        return instructorsFallback;
+      }
     },
   });
 
@@ -26,13 +33,14 @@ const InstructorsSection = () => {
         </div>
 
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-8">
-          {instructors?.map((inst) => (
+          {instructors.map((inst) => (
             <div key={inst.id} className="group text-center">
               <div className="relative mb-5 overflow-hidden rounded-3xl">
                 <img
                   src={inst.avatar || ""}
                   alt={inst.name}
                   className="w-full aspect-square object-cover group-hover:scale-105 transition-transform duration-500"
+                  loading="lazy"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-foreground/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end justify-center pb-6">
                   <div className="flex gap-3">
