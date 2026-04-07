@@ -17,19 +17,43 @@ const Courses = () => {
   const [selectedLevel, setSelectedLevel] = useState<string | null>(null);
   const [showFilters, setShowFilters] = useState(false);
 
+  const fallbackCourses = staticCourses.map((c) => ({
+    id: `fallback-${c.id}`,
+    slug: c.slug,
+    title: c.title,
+    image: c.image,
+    badge: c.badge,
+    level: c.level,
+    lessons: c.lessons,
+    students: c.students,
+    rating: c.rating,
+    reviews: c.reviews,
+    price: c.price,
+    sale_price: c.salePrice,
+    description: c.description,
+    categories: { name: c.category },
+    instructors: { name: c.instructor.name, avatar: c.instructor.avatar, role: c.instructor.role },
+  }));
+
   const { data: coursesData } = useQuery({
     queryKey: ["courses-page"],
+    initialData: fallbackCourses,
+    retry: 1,
     queryFn: async () => {
-      const { data, error } = await supabase
-        .from("courses")
-        .select("*, categories(name), instructors(name, avatar, role)")
-        .order("title");
-      if (error) throw error;
-      return data;
+      try {
+        const { data, error } = await supabase
+          .from("courses")
+          .select("*, categories(name), instructors(name, avatar, role)")
+          .order("title");
+        if (error) throw error;
+        return data?.length ? data : fallbackCourses;
+      } catch {
+        return fallbackCourses;
+      }
     },
   });
 
-  const courses = coursesData ?? [];
+  const courses = coursesData ?? fallbackCourses;
 
   const categories = useMemo(() => [...new Set(courses.map((c) => (c.categories as any)?.name).filter(Boolean))], [courses]);
   const levels = useMemo(() => [...new Set(courses.map((c) => c.level).filter(Boolean))], [courses]);
