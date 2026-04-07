@@ -8,7 +8,7 @@ const Navbar = () => {
 
   const navLinks = [
     { label: "Início", href: "/", isRoute: true },
-    { label: "Cursos", href: "/cursos", isRoute: true },
+    { label: "Cursos", href: "/#cursos", isRoute: true },
     { label: "Sobre", href: "/#sobre", isRoute: true },
     { label: "Depoimentos", href: "/#depoimentos", isRoute: true },
     { label: "Blog", href: "/#blog", isRoute: true },
