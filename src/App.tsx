@@ -4,8 +4,8 @@ import { Toaster as Sonner } from "@/components/ui/sonner";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { AuthProvider } from "@/hooks/useAuth";
-import ScrollToHash from "@/components/ScrollToHash";
 import { useMaintenanceMode } from "@/hooks/useMaintenanceMode";
+import ScrollToHash from "@/components/ScrollToHash";
 import MaintenancePage from "@/components/MaintenancePage";
 import Index from "./pages/Index.tsx";
 import Courses from "./pages/Courses.tsx";
@@ -22,11 +22,34 @@ import AdminBlog from "./pages/admin/AdminBlog.tsx";
 
 const queryClient = new QueryClient();
 
-const PublicRoute = ({ children }: { children: React.ReactNode }) => {
+const AppRoutes = () => {
   const { isMaintenanceMode, isLoading } = useMaintenanceMode();
+
   if (isLoading) return null;
-  if (isMaintenanceMode) return <MaintenancePage />;
-  return <>{children}</>;
+
+  return (
+    <Routes>
+      {!isMaintenanceMode && (
+        <>
+          <Route path="/" element={<Index />} />
+          <Route path="/cursos" element={<Courses />} />
+          <Route path="/cursos/:slug" element={<CourseDetails />} />
+        </>
+      )}
+
+      <Route path="/admin/login" element={<AdminLogin />} />
+      <Route path="/admin" element={<AdminLayout />}>
+        <Route index element={<Dashboard />} />
+        <Route path="cursos" element={<AdminCourses />} />
+        <Route path="categorias" element={<AdminCategories />} />
+        <Route path="instrutores" element={<AdminInstructors />} />
+        <Route path="depoimentos" element={<AdminTestimonials />} />
+        <Route path="blog" element={<AdminBlog />} />
+      </Route>
+
+      <Route path="*" element={isMaintenanceMode ? <MaintenancePage /> : <NotFound />} />
+    </Routes>
+  );
 };
 
 const App = () => (
@@ -37,21 +60,7 @@ const App = () => (
       <BrowserRouter>
         <AuthProvider>
           <ScrollToHash />
-          <Routes>
-            <Route path="/" element={<PublicRoute><Index /></PublicRoute>} />
-            <Route path="/cursos" element={<PublicRoute><Courses /></PublicRoute>} />
-            <Route path="/cursos/:slug" element={<PublicRoute><CourseDetails /></PublicRoute>} />
-            <Route path="/admin/login" element={<AdminLogin />} />
-            <Route path="/admin" element={<AdminLayout />}>
-              <Route index element={<Dashboard />} />
-              <Route path="cursos" element={<AdminCourses />} />
-              <Route path="categorias" element={<AdminCategories />} />
-              <Route path="instrutores" element={<AdminInstructors />} />
-              <Route path="depoimentos" element={<AdminTestimonials />} />
-              <Route path="blog" element={<AdminBlog />} />
-            </Route>
-            <Route path="*" element={<NotFound />} />
-          </Routes>
+          <AppRoutes />
         </AuthProvider>
       </BrowserRouter>
     </TooltipProvider>
