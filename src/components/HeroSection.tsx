@@ -60,7 +60,7 @@ const HeroSection = () => {
                   />
                 ))}
                 <div className="w-10 h-10 rounded-full gradient-bg flex items-center justify-center text-primary-foreground text-xs font-bold border-2 border-background">
-                  +50K
+                  +3K
                 </div>
               </div>
               <div>
