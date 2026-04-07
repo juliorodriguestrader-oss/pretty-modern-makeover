@@ -23,9 +23,7 @@ import AdminBlog from "./pages/admin/AdminBlog.tsx";
 const queryClient = new QueryClient();
 
 const AppRoutes = () => {
-  const { isMaintenanceMode, isLoading } = useMaintenanceMode();
-
-  if (isLoading) return null;
+  const { isMaintenanceMode } = useMaintenanceMode();
 
   return (
     <Routes>

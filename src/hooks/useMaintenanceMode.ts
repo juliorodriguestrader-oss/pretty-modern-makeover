@@ -7,14 +7,25 @@ export const useMaintenanceMode = () => {
   const { data: isMaintenanceMode, isLoading } = useQuery({
     queryKey: ["maintenance-mode"],
     queryFn: async () => {
-      const { data } = await supabase
-        .from("site_settings")
-        .select("value")
-        .eq("key", "maintenance_mode")
-        .maybeSingle();
-      return data?.value === "true";
+      try {
+        const { data, error } = await supabase
+          .from("site_settings")
+          .select("value")
+          .eq("key", "maintenance_mode")
+          .maybeSingle();
+
+        if (error) {
+          return false;
+        }
+
+        return data?.value === "true";
+      } catch {
+        return false;
+      }
     },
     staleTime: 30000,
+    retry: false,
+    refetchOnWindowFocus: false,
   });
 
   const toggleMutation = useMutation({
