@@ -69,7 +69,7 @@ const HeroSection = () => {
                     <Star key={i} className="w-3.5 h-3.5 fill-current" />
                   ))}
                 </div>
-                <p className="text-sm text-muted-foreground">50.000+ alunos satisfeitos</p>
+                <p className="text-sm text-muted-foreground">3.000+ alunos satisfeitos</p>
               </div>
             </div>
           </div>
