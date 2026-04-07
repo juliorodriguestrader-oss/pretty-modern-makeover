@@ -5,6 +5,8 @@ import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { AuthProvider } from "@/hooks/useAuth";
 import ScrollToHash from "@/components/ScrollToHash";
+import { useMaintenanceMode } from "@/hooks/useMaintenanceMode";
+import MaintenancePage from "@/components/MaintenancePage";
 import Index from "./pages/Index.tsx";
 import Courses from "./pages/Courses.tsx";
 import CourseDetails from "./pages/CourseDetails.tsx";
@@ -20,6 +22,13 @@ import AdminBlog from "./pages/admin/AdminBlog.tsx";
 
 const queryClient = new QueryClient();
 
+const PublicRoute = ({ children }: { children: React.ReactNode }) => {
+  const { isMaintenanceMode, isLoading } = useMaintenanceMode();
+  if (isLoading) return null;
+  if (isMaintenanceMode) return <MaintenancePage />;
+  return <>{children}</>;
+};
+
 const App = () => (
   <QueryClientProvider client={queryClient}>
     <TooltipProvider>
@@ -29,9 +38,9 @@ const App = () => (
         <AuthProvider>
           <ScrollToHash />
           <Routes>
-            <Route path="/" element={<Index />} />
-            <Route path="/cursos" element={<Courses />} />
-            <Route path="/cursos/:slug" element={<CourseDetails />} />
+            <Route path="/" element={<PublicRoute><Index /></PublicRoute>} />
+            <Route path="/cursos" element={<PublicRoute><Courses /></PublicRoute>} />
+            <Route path="/cursos/:slug" element={<PublicRoute><CourseDetails /></PublicRoute>} />
             <Route path="/admin/login" element={<AdminLogin />} />
             <Route path="/admin" element={<AdminLayout />}>
               <Route index element={<Dashboard />} />
