@@ -13,17 +13,17 @@ const Footer = () => {
               <span className="text-xl font-bold">EloCursos</span>
             </div>
             <p className="text-primary-foreground/60 text-sm leading-relaxed mb-5">
-              Transformando carreiras através da educação online de qualidade desde 2020.
+              Transformando carreiras através da educação PRESENCIAL e online de qualidade desde 2011.
             </p>
             <div className="space-y-2">
-              <a href="tel:12345615523" className="flex items-center gap-2 text-sm text-primary-foreground/60 hover:text-primary-foreground transition-colors">
-                <Phone className="w-4 h-4" /> (12) 3456-1552
+              <a href="tel:99988587620" className="flex items-center gap-2 text-sm text-primary-foreground/60 hover:text-primary-foreground transition-colors">
+                <Phone className="w-4 h-4" /> (99) 98858-7620
               </a>
               <a href="mailto:contato@elocursos.com.br" className="flex items-center gap-2 text-sm text-primary-foreground/60 hover:text-primary-foreground transition-colors">
                 <Mail className="w-4 h-4" /> contato@elocursos.com.br
               </a>
               <p className="flex items-center gap-2 text-sm text-primary-foreground/60">
-                <MapPin className="w-4 h-4" /> São Paulo, SP
+                <MapPin className="w-4 h-4" /> São João dos Patos, MA
               </p>
             </div>
           </div>
