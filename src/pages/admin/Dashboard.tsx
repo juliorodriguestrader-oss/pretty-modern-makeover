@@ -1,6 +1,9 @@
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
-import { BookOpen, Users, MessageSquare, FolderOpen, Newspaper } from "lucide-react";
+import { BookOpen, Users, MessageSquare, FolderOpen, Newspaper, Construction } from "lucide-react";
+import { useMaintenanceMode } from "@/hooks/useMaintenanceMode";
+import { Switch } from "@/components/ui/switch";
+import { toast } from "@/hooks/use-toast";
 
 const Dashboard = () => {
   const { data: coursesCount } = useQuery({
