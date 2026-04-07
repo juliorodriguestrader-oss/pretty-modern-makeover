@@ -54,9 +54,36 @@ const Dashboard = () => {
     { label: "Posts do Blog", value: postsCount ?? 0, icon: Newspaper, color: "text-primary" },
   ];
 
+  const { isMaintenanceMode, toggleMaintenance, isToggling } = useMaintenanceMode();
+
+  const handleToggle = async (checked: boolean) => {
+    try {
+      await toggleMaintenance(checked);
+      toast({
+        title: checked ? "Site em manutenção" : "Site ativo",
+        description: checked
+          ? "O site está exibindo a página de manutenção para visitantes."
+          : "O site voltou ao funcionamento normal.",
+      });
+    } catch {
+      toast({ title: "Erro ao alterar modo de manutenção", variant: "destructive" });
+    }
+  };
+
   return (
     <div>
-      <h1 className="text-2xl font-bold text-foreground mb-6">Dashboard</h1>
+      <div className="flex items-center justify-between mb-6">
+        <h1 className="text-2xl font-bold text-foreground">Dashboard</h1>
+        <div className="flex items-center gap-3 bg-card rounded-xl px-4 py-3 shadow-card">
+          <Construction className={`w-5 h-5 ${isMaintenanceMode ? "text-destructive" : "text-muted-foreground"}`} />
+          <span className="text-sm font-medium text-foreground">Modo Manutenção</span>
+          <Switch
+            checked={isMaintenanceMode}
+            onCheckedChange={handleToggle}
+            disabled={isToggling}
+          />
+        </div>
+      </div>
       <div className="grid grid-cols-2 lg:grid-cols-5 gap-4">
         {stats.map((stat) => (
           <div key={stat.label} className="bg-card rounded-xl p-5 shadow-card">
