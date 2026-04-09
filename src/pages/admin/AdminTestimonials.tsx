@@ -24,8 +24,9 @@ const AdminTestimonials = () => {
   const [editing, setEditing] = useState<Testimonial | null>(null);
   const [form, setForm] = useState({ name: "", role: "", initials: "", text: "", rating: "5" });
 
-  const { data: testimonials, isLoading } = useQuery({
+  const { data: testimonials, isLoading, isError, refetch } = useQuery({
     queryKey: ["admin-testimonials"],
+    retry: 1,
     queryFn: async () => {
       const { data, error } = await supabase.from("testimonials").select("*").order("created_at", { ascending: false });
       if (error) throw error;
