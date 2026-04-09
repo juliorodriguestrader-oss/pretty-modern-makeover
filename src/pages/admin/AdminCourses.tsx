@@ -48,8 +48,9 @@ const AdminCourses = () => {
   const [editing, setEditing] = useState<CourseRow | null>(null);
   const [form, setForm] = useState(defaultForm);
 
-  const { data: courses, isLoading } = useQuery({
+  const { data: courses, isLoading, isError, refetch } = useQuery({
     queryKey: ["admin-courses"],
+    retry: 1,
     queryFn: async () => {
       const { data, error } = await supabase.from("courses").select("*").order("title");
       if (error) throw error;
