@@ -22,8 +22,9 @@ const AdminCategories = () => {
   const [editing, setEditing] = useState<Category | null>(null);
   const [form, setForm] = useState({ name: "", slug: "", icon: "Monitor", course_count: "0 cursos" });
 
-  const { data: categories, isLoading } = useQuery({
+  const { data: categories, isLoading, isError, refetch } = useQuery({
     queryKey: ["admin-categories"],
+    retry: 1,
     queryFn: async () => {
       const { data, error } = await supabase.from("categories").select("*").order("name");
       if (error) throw error;
