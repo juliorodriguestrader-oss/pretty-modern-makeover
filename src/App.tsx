@@ -23,7 +23,15 @@ import AdminBlog from "./pages/admin/AdminBlog.tsx";
 const queryClient = new QueryClient();
 
 const AppRoutes = () => {
-  const { isMaintenanceMode } = useMaintenanceMode();
+  const { isMaintenanceMode, isLoading } = useMaintenanceMode();
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-background">
+        <div className="animate-spin rounded-full h-8 w-8 border-2 border-primary border-t-transparent" />
+      </div>
+    );
+  }
 
   return (
     <Routes>
