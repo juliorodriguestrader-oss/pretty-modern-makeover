@@ -75,7 +75,12 @@ const AdminTestimonials = () => {
         <Button onClick={openNew}><Plus className="w-4 h-4 mr-2" />Novo Depoimento</Button>
       </div>
 
-      {isLoading ? <p className="text-muted-foreground">Carregando...</p> : (
+      {isLoading ? <p className="text-muted-foreground">Carregando...</p> : isError ? (
+        <div className="text-center py-8">
+          <p className="text-muted-foreground mb-4">Erro ao carregar depoimentos.</p>
+          <Button variant="outline" onClick={() => refetch()}>Tentar novamente</Button>
+        </div>
+      ) : (
         <div className="bg-card rounded-xl shadow-card overflow-hidden">
           <table className="w-full">
             <thead className="bg-muted">

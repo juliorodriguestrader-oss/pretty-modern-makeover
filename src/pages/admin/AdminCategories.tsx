@@ -93,6 +93,11 @@ const AdminCategories = () => {
 
       {isLoading ? (
         <p className="text-muted-foreground">Carregando...</p>
+      ) : isError ? (
+        <div className="text-center py-8">
+          <p className="text-muted-foreground mb-4">Erro ao carregar categorias.</p>
+          <Button variant="outline" onClick={() => refetch()}>Tentar novamente</Button>
+        </div>
       ) : (
         <div className="bg-card rounded-xl shadow-card overflow-hidden">
           <table className="w-full">
