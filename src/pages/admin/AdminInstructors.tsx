@@ -23,8 +23,9 @@ const AdminInstructors = () => {
   const [editing, setEditing] = useState<Instructor | null>(null);
   const [form, setForm] = useState({ name: "", role: "", avatar: "", linkedin: "", twitter: "" });
 
-  const { data: instructors, isLoading } = useQuery({
+  const { data: instructors, isLoading, isError, refetch } = useQuery({
     queryKey: ["admin-instructors"],
+    retry: 1,
     queryFn: async () => {
       const { data, error } = await supabase.from("instructors").select("*").order("name");
       if (error) throw error;
@@ -73,7 +74,12 @@ const AdminInstructors = () => {
         <Button onClick={openNew}><Plus className="w-4 h-4 mr-2" />Novo Instrutor</Button>
       </div>
 
-      {isLoading ? <p className="text-muted-foreground">Carregando...</p> : (
+      {isLoading ? <p className="text-muted-foreground">Carregando...</p> : isError ? (
+        <div className="text-center py-8">
+          <p className="text-muted-foreground mb-4">Erro ao carregar instrutores.</p>
+          <Button variant="outline" onClick={() => refetch()}>Tentar novamente</Button>
+        </div>
+      ) : (
         <div className="bg-card rounded-xl shadow-card overflow-hidden">
           <table className="w-full">
             <thead className="bg-muted">

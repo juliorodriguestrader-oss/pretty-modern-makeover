@@ -31,8 +31,9 @@ const AdminBlog = () => {
   const [fetchingUrl, setFetchingUrl] = useState(false);
   const [form, setForm] = useState({ title: "", slug: "", excerpt: "", content: "", category: "", date: "", image: "", published: true, external_url: "" });
 
-  const { data: posts, isLoading } = useQuery({
+  const { data: posts, isLoading, isError, refetch } = useQuery({
     queryKey: ["admin-blog"],
+    retry: 1,
     queryFn: async () => {
       const { data, error } = await supabase.from("blog_posts").select("*").order("created_at", { ascending: false });
       if (error) throw error;
@@ -175,7 +176,12 @@ const AdminBlog = () => {
         </div>
       </div>
 
-      {isLoading ? <p className="text-muted-foreground">Carregando...</p> : (
+      {isLoading ? <p className="text-muted-foreground">Carregando...</p> : isError ? (
+        <div className="text-center py-8">
+          <p className="text-muted-foreground mb-4">Erro ao carregar posts.</p>
+          <Button variant="outline" onClick={() => refetch()}>Tentar novamente</Button>
+        </div>
+      ) : (
         <div className="bg-card rounded-xl shadow-card overflow-hidden">
           <table className="w-full">
             <thead className="bg-muted">

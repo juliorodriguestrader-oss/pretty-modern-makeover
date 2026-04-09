@@ -24,8 +24,9 @@ const AdminTestimonials = () => {
   const [editing, setEditing] = useState<Testimonial | null>(null);
   const [form, setForm] = useState({ name: "", role: "", initials: "", text: "", rating: "5" });
 
-  const { data: testimonials, isLoading } = useQuery({
+  const { data: testimonials, isLoading, isError, refetch } = useQuery({
     queryKey: ["admin-testimonials"],
+    retry: 1,
     queryFn: async () => {
       const { data, error } = await supabase.from("testimonials").select("*").order("created_at", { ascending: false });
       if (error) throw error;
@@ -74,7 +75,12 @@ const AdminTestimonials = () => {
         <Button onClick={openNew}><Plus className="w-4 h-4 mr-2" />Novo Depoimento</Button>
       </div>
 
-      {isLoading ? <p className="text-muted-foreground">Carregando...</p> : (
+      {isLoading ? <p className="text-muted-foreground">Carregando...</p> : isError ? (
+        <div className="text-center py-8">
+          <p className="text-muted-foreground mb-4">Erro ao carregar depoimentos.</p>
+          <Button variant="outline" onClick={() => refetch()}>Tentar novamente</Button>
+        </div>
+      ) : (
         <div className="bg-card rounded-xl shadow-card overflow-hidden">
           <table className="w-full">
             <thead className="bg-muted">

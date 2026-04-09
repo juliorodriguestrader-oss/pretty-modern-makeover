@@ -48,8 +48,9 @@ const AdminCourses = () => {
   const [editing, setEditing] = useState<CourseRow | null>(null);
   const [form, setForm] = useState(defaultForm);
 
-  const { data: courses, isLoading } = useQuery({
+  const { data: courses, isLoading, isError, refetch } = useQuery({
     queryKey: ["admin-courses"],
+    retry: 1,
     queryFn: async () => {
       const { data, error } = await supabase.from("courses").select("*").order("title");
       if (error) throw error;
@@ -157,7 +158,12 @@ const AdminCourses = () => {
         <Button onClick={openNew}><Plus className="w-4 h-4 mr-2" />Novo Curso</Button>
       </div>
 
-      {isLoading ? <p className="text-muted-foreground">Carregando...</p> : (
+      {isLoading ? <p className="text-muted-foreground">Carregando...</p> : isError ? (
+        <div className="text-center py-8">
+          <p className="text-muted-foreground mb-4">Erro ao carregar cursos.</p>
+          <Button variant="outline" onClick={() => refetch()}>Tentar novamente</Button>
+        </div>
+      ) : (
         <div className="bg-card rounded-xl shadow-card overflow-hidden">
           <table className="w-full">
             <thead className="bg-muted">

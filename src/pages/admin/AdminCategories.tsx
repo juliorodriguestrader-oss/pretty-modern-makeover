@@ -22,8 +22,9 @@ const AdminCategories = () => {
   const [editing, setEditing] = useState<Category | null>(null);
   const [form, setForm] = useState({ name: "", slug: "", icon: "Monitor", course_count: "0 cursos" });
 
-  const { data: categories, isLoading } = useQuery({
+  const { data: categories, isLoading, isError, refetch } = useQuery({
     queryKey: ["admin-categories"],
+    retry: 1,
     queryFn: async () => {
       const { data, error } = await supabase.from("categories").select("*").order("name");
       if (error) throw error;
@@ -92,6 +93,11 @@ const AdminCategories = () => {
 
       {isLoading ? (
         <p className="text-muted-foreground">Carregando...</p>
+      ) : isError ? (
+        <div className="text-center py-8">
+          <p className="text-muted-foreground mb-4">Erro ao carregar categorias.</p>
+          <Button variant="outline" onClick={() => refetch()}>Tentar novamente</Button>
+        </div>
       ) : (
         <div className="bg-card rounded-xl shadow-card overflow-hidden">
           <table className="w-full">
