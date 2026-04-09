@@ -23,8 +23,9 @@ const AdminInstructors = () => {
   const [editing, setEditing] = useState<Instructor | null>(null);
   const [form, setForm] = useState({ name: "", role: "", avatar: "", linkedin: "", twitter: "" });
 
-  const { data: instructors, isLoading } = useQuery({
+  const { data: instructors, isLoading, isError, refetch } = useQuery({
     queryKey: ["admin-instructors"],
+    retry: 1,
     queryFn: async () => {
       const { data, error } = await supabase.from("instructors").select("*").order("name");
       if (error) throw error;
