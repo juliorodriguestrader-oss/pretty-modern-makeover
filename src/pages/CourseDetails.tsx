@@ -21,8 +21,9 @@ const CourseDetails = () => {
   const { slug } = useParams();
   const [activeTab, setActiveTab] = useState<"overview" | "curriculum" | "instructor">("overview");
 
-  const { data: course, isLoading } = useQuery({
+  const { data: course, isLoading, isError, refetch } = useQuery({
     queryKey: ["course-detail", slug],
+    retry: 2,
     queryFn: async () => {
       const { data, error } = await supabase
         .from("courses")
