@@ -21,8 +21,9 @@ const CourseDetails = () => {
   const { slug } = useParams();
   const [activeTab, setActiveTab] = useState<"overview" | "curriculum" | "instructor">("overview");
 
-  const { data: course, isLoading } = useQuery({
+  const { data: course, isLoading, isError, refetch } = useQuery({
     queryKey: ["course-detail", slug],
+    retry: 2,
     queryFn: async () => {
       const { data, error } = await supabase
         .from("courses")
@@ -46,13 +47,19 @@ const CourseDetails = () => {
     );
   }
 
-  if (!course) {
+  if (!course || isError) {
     return (
       <div className="min-h-screen bg-background">
         <Navbar />
         <div className="container mx-auto px-4 py-32 text-center">
           <h1 className="text-3xl font-bold text-foreground mb-4">Curso não encontrado</h1>
-          <Link to="/cursos" className="text-primary hover:underline font-sans">← Voltar para cursos</Link>
+          <p className="text-muted-foreground mb-6">O curso que você procura pode estar temporariamente indisponível.</p>
+          <div className="flex justify-center gap-4">
+            <Button variant="outline" onClick={() => refetch()}>Tentar novamente</Button>
+            <Link to="/cursos" className="text-primary hover:underline font-sans flex items-center gap-1">
+              <ArrowLeft className="w-4 h-4" /> Voltar para cursos
+            </Link>
+          </div>
         </div>
         <Footer />
       </div>
