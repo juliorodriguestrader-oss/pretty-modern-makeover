@@ -10,8 +10,12 @@ import { Star, Clock, Users, Search, SlidersHorizontal, X } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { useRealtimeSubscription } from "@/hooks/useRealtimeSubscription";
+
+const QUERY_KEYS = [["courses-page"]];
 
 const Courses = () => {
+  useRealtimeSubscription("courses", QUERY_KEYS);
   const [search, setSearch] = useState("");
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [selectedLevel, setSelectedLevel] = useState<string | null>(null);
