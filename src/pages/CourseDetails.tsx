@@ -24,6 +24,7 @@ const CourseDetails = () => {
   const { data: course, isLoading, isError, refetch } = useQuery({
     queryKey: ["course-detail", slug],
     retry: 2,
+    staleTime: 30000,
     queryFn: async () => {
       const { data, error } = await supabase
         .from("courses")
