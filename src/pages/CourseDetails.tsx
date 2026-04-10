@@ -24,14 +24,24 @@ const CourseDetails = () => {
   const { data: course, isLoading, isError, refetch } = useQuery({
     queryKey: ["course-detail", slug],
     retry: 2,
+    staleTime: 30000,
     queryFn: async () => {
-      const { data, error } = await supabase
-        .from("courses")
-        .select("*, categories(name), instructors(name, avatar, role)")
-        .eq("slug", slug!)
-        .maybeSingle();
-      if (error) throw error;
-      return data;
+      const controller = new AbortController();
+      const timeout = setTimeout(() => controller.abort(), 8000);
+      try {
+        const { data, error } = await supabase
+          .from("courses")
+          .select("*, categories(name), instructors(name, avatar, role)")
+          .eq("slug", slug!)
+          .maybeSingle()
+          .abortSignal(controller.signal);
+        clearTimeout(timeout);
+        if (error) throw error;
+        return data;
+      } catch (err) {
+        clearTimeout(timeout);
+        throw err;
+      }
     },
     enabled: !!slug,
   });
