@@ -4,8 +4,13 @@ import { Link } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { featuredCoursesFallback } from "@/data/homeFallbacks";
+import { useRealtimeSubscription } from "@/hooks/useRealtimeSubscription";
+
+const QUERY_KEYS = [["featured-courses"]];
 
 const CoursesSection = () => {
+  useRealtimeSubscription("courses", QUERY_KEYS);
+
   const { data: featured = featuredCoursesFallback } = useQuery({
     queryKey: ["featured-courses"],
     initialData: featuredCoursesFallback,
