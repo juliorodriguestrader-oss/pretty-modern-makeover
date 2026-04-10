@@ -1,10 +1,18 @@
+import { useState, useEffect } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 
 export const useMaintenanceMode = () => {
   const queryClient = useQueryClient();
+  const [forceReady, setForceReady] = useState(false);
 
-  const { data: isMaintenanceMode, isLoading } = useQuery({
+  // Safety timeout: never stay loading more than 3 seconds
+  useEffect(() => {
+    const timer = setTimeout(() => setForceReady(true), 3000);
+    return () => clearTimeout(timer);
+  }, []);
+
+  const { data: isMaintenanceMode, isLoading: queryLoading } = useQuery({
     queryKey: ["maintenance-mode"],
     queryFn: async () => {
       try {
@@ -27,6 +35,8 @@ export const useMaintenanceMode = () => {
     retry: false,
     refetchOnWindowFocus: false,
   });
+
+  const isLoading = queryLoading && !forceReady;
 
   const toggleMutation = useMutation({
     mutationFn: async (enabled: boolean) => {
