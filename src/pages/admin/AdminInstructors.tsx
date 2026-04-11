@@ -7,6 +7,7 @@ import { Label } from "@/components/ui/label";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { toast } from "sonner";
 import { Plus, Pencil, Trash2, Copy } from "lucide-react";
+import { useRealtimeSubscription } from "@/hooks/useRealtimeSubscription";
 
 interface Instructor {
   id: string;
@@ -17,7 +18,10 @@ interface Instructor {
   twitter: string | null;
 }
 
+const QUERY_KEYS = [["admin-instructors"]];
+
 const AdminInstructors = () => {
+  useRealtimeSubscription("instructors", QUERY_KEYS);
   const queryClient = useQueryClient();
   const [open, setOpen] = useState(false);
   const [editing, setEditing] = useState<Instructor | null>(null);

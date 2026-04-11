@@ -7,6 +7,7 @@ import { Label } from "@/components/ui/label";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { toast } from "sonner";
 import { Plus, Pencil, Trash2, Copy } from "lucide-react";
+import { useRealtimeSubscription } from "@/hooks/useRealtimeSubscription";
 
 interface Category {
   id: string;
@@ -16,7 +17,10 @@ interface Category {
   course_count: string | null;
 }
 
+const QUERY_KEYS = [["admin-categories"]];
+
 const AdminCategories = () => {
+  useRealtimeSubscription("categories", QUERY_KEYS);
   const queryClient = useQueryClient();
   const [open, setOpen] = useState(false);
   const [editing, setEditing] = useState<Category | null>(null);
