@@ -2,8 +2,12 @@ import { Linkedin, Twitter } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { instructorsFallback } from "@/data/homeFallbacks";
+import { useRealtimeSubscription } from "@/hooks/useRealtimeSubscription";
+
+const QUERY_KEYS = [["instructors"]];
 
 const InstructorsSection = () => {
+  useRealtimeSubscription("instructors", QUERY_KEYS);
   const { data: instructors = instructorsFallback } = useQuery({
     queryKey: ["instructors"],
     initialData: instructorsFallback,

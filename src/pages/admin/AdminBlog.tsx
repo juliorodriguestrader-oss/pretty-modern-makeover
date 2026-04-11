@@ -9,6 +9,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/u
 import { Switch } from "@/components/ui/switch";
 import { toast } from "sonner";
 import { Plus, Pencil, Trash2, Copy, Link, FileText, Loader2 } from "lucide-react";
+import { useRealtimeSubscription } from "@/hooks/useRealtimeSubscription";
 
 interface BlogPost {
   id: string;
@@ -23,7 +24,10 @@ interface BlogPost {
   external_url: string | null;
 }
 
+const QUERY_KEYS = [["admin-blog"]];
+
 const AdminBlog = () => {
+  useRealtimeSubscription("blog_posts", QUERY_KEYS);
   const queryClient = useQueryClient();
   const [open, setOpen] = useState(false);
   const [editing, setEditing] = useState<BlogPost | null>(null);

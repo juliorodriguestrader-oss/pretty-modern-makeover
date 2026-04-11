@@ -2,8 +2,12 @@ import { ArrowRight, Calendar } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { blogPostsFallback } from "@/data/homeFallbacks";
+import { useRealtimeSubscription } from "@/hooks/useRealtimeSubscription";
+
+const QUERY_KEYS = [["blog-posts"]];
 
 const BlogSection = () => {
+  useRealtimeSubscription("blog_posts", QUERY_KEYS);
   const { data: posts = blogPostsFallback } = useQuery({
     queryKey: ["blog-posts"],
     initialData: blogPostsFallback,
