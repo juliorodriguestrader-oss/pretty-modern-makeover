@@ -2,8 +2,12 @@ import { Star, Quote } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { testimonialsFallback } from "@/data/homeFallbacks";
+import { useRealtimeSubscription } from "@/hooks/useRealtimeSubscription";
+
+const QUERY_KEYS = [["testimonials"]];
 
 const TestimonialsSection = () => {
+  useRealtimeSubscription("testimonials", QUERY_KEYS);
   const { data: testimonials = testimonialsFallback } = useQuery({
     queryKey: ["testimonials"],
     initialData: testimonialsFallback,
